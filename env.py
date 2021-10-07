@@ -31,10 +31,10 @@ class ClutteredPushGrasp:
 
     SIMULATION_STEP_DELAY = 1 / 240.
 
-    def __init__(self, models: Models, camera: Camera, vis=False, num_objs=3, gripper_type='85') -> None:
+    def __init__(self, models: Models, vis=False, num_objs=3, gripper_type='85') -> None:
         self.vis = vis
         self.num_objs = num_objs
-        self.camera = camera
+        #self.camera = camera
 
         if gripper_type not in ('85', '140'):
             raise NotImplementedError('Gripper %s not implemented.' % gripper_type)
@@ -189,7 +189,7 @@ class ClutteredPushGrasp:
         print('changed depth pixel count:', changed_depth_counter)
         return changed_depth_counter > self.DEPTH_CHANGE_COUNTER_THRESHOLD
 
-    def step(self, position: tuple, angle: float, action_type: str, debug: bool = False):
+    def step(self, camera, position: tuple, angle: float, action_type: str, debug: bool = False):
         """
         position [x y z]: The axis in real-world coordinate
         angle: float,   for grasp, it should be in [-pi/2, pi/2)
@@ -254,7 +254,9 @@ class ClutteredPushGrasp:
         self.move_away_arm()
         self.open_gripper()
         # TODO: Check if object is outside the environment
-        rgb, depth, seg = self.camera.shot()
+
+        # rgb, depth, seg = self.camera.shot()
+        rgb, depth, seg = camera.shot()
         depth_changed = self.check_depth_change(depth)
         if action_type == 'grasp' and not grasp_success:
             reward += self.GRASP_FAIL_REWARD
@@ -283,14 +285,21 @@ class ClutteredPushGrasp:
                                         maxVelocity=joint.maxVelocity)
                 self.step_simulation()
 
-    def reset(self):
+    def reset(self, camera):
         self.reset_robot()
         self.reset_obj_state()
         self.move_away_arm()
-        rgb, depth, seg = self.camera.shot()
+        #rgb, depth, seg = self.camera.shot()
+        rgb, depth, seg = camera.shot()
         self.prev_observation = (rgb, depth, seg)
         self.reset_robot()
         self.successful_obj_ids = []
+        return rgb, depth, seg
+
+    def reset_camera(self, camera):
+        #rgb, depth, seg = self.camera.shot()
+        rgb, depth, seg = camera.shot()
+        self.prev_observation = (rgb, depth, seg)
         return rgb, depth, seg
 
     def move_away_arm(self):
