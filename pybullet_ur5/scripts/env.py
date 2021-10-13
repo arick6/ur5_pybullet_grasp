@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import time
 import math
 import random
@@ -45,15 +46,15 @@ class ClutteredPushGrasp:
         p.setAdditionalSearchPath(pybullet_data.getDataPath())
         p.setGravity(0, 0, -10)
         self.planeID = p.loadURDF("plane.urdf")
-        self.tablaID = p.loadURDF("./urdf/objects/table.urdf",
+        self.tablaID = p.loadURDF("/home/iclab-isaac/ur5_pybullet_grasp/src/pybullet_ur5/urdf/objects/table.urdf",
                                   [0.0, -0.5, 0.8],
                                   p.getQuaternionFromEuler([0, 0, 0]),
                                   useFixedBase=True)
-        self.UR5StandID = p.loadURDF("./urdf/objects/ur5_stand.urdf",
+        self.UR5StandID = p.loadURDF("/home/iclab-isaac/ur5_pybullet_grasp/src/pybullet_ur5/urdf/objects/ur5_stand.urdf",
                                      [-0.7, -0.36, 0.0],
                                      p.getQuaternionFromEuler([0, 0, 0]),
                                      useFixedBase=True)
-        self.robotID = p.loadURDF("./urdf/ur5_robotiq_%s.urdf" % gripper_type,
+        self.robotID = p.loadURDF("/home/iclab-isaac/ur5_pybullet_grasp/src/pybullet_ur5/urdf/ur5_robotiq_%s.urdf" % gripper_type,
                                   [0, 0, 0.0],  # StartPosition
                                   p.getQuaternionFromEuler([0, 0, 0]),  # StartOrientation
                                   useFixedBase=True,

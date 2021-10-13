@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 from collections import namedtuple

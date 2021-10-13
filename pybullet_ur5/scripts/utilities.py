@@ -1,10 +1,11 @@
+#!/usr/bin/env python3
 import pybullet as p
 import glob
 from collections import namedtuple
 from attrdict import AttrDict
 import functools
 #import torch
-#import cv2
+# import cv2
 from scipy import ndimage
 import numpy as np
 
