@@ -11,6 +11,7 @@ from utilities import YCBModels, Camera
 import rospy
 import cv2
 from std_msgs.msg import Int32MultiArray, Float32MultiArray
+from geometry_msgs.msg import Point
 
 def heuristic_demo():
     ycb_models = YCBModels(
@@ -39,7 +40,11 @@ def heuristic_demo():
         rate = rospy.Rate(5)
         pub_rgb.publish(rgb_ros_data)
         pub_depth.publish(depth_ros_data)
-        pub_object_pos.publish(x)
+        points = Point()
+        points.x = x
+        points.y = y
+        points.z = z
+        pub_object_pos.publish(points)
         rate.sleep()
         print("++++++++++++++++")
         (rgb, depth, seg), reward, done, info = env.step(camera,(x, y, z), 1, 'grasp')
@@ -99,7 +104,7 @@ def user_control_demo():
         keys = p.getKeyboardEvents()
 
         #publish data to ros
-        pub_rgb, pub_depth = ROS_init()
+        pub_rgb, pub_depth,pub_object_pos = ROS_init()
         rgb_ros_data = rnp.to_multiarray_i32(np.array(rgb, dtype=np.int32))
         depth_ros_data = rnp.to_multiarray_f32(np.array(depth, dtype=np.float32))
         rate = rospy.Rate(5)
@@ -179,7 +184,7 @@ def ROS_init():
     # depth_ros_data = rnp.to_multiarray_f32(np.array(depth_data, dtype=np.float32))
     pub_rgb = rospy.Publisher('/projected_image/rgb', Int32MultiArray)
     pub_depth = rospy.Publisher('/projected_image/depth', Float32MultiArray)
-    pub_object_pos = rospy.Publisher('/projected_image/pos', Float32MultiArray)
+    pub_object_pos = rospy.Publisher('/projected_image/pos', Point)
     rospy.init_node('pybullet_info', anonymous=True)
     # rate = rospy.Rate(5)
     # while not rospy.is_shutdown():
@@ -190,5 +195,5 @@ def ROS_init():
 
 
 if __name__ == '__main__':
-    user_control_demo()
-    #heuristic_demo()
+    #user_control_demo()
+    heuristic_demo()
